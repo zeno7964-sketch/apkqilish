@@ -1,21 +1,56 @@
-[app]
-title = Mening Ilovam
-package.name = meningilovam
-package.domain = org.test
+name: Build Android APK
 
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
+on:
+  push:
+    branches: [ main, master ]
 
-version = 0.1
-requirements = python3,kivy
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-orientation = portrait
-fullscreen = 0
+    steps:
+    - uses: actions/checkout@v4
 
-# Android SDK va API versiyalarini aniq ko'rsatamiz
-android.api = 33
-android.minapi = 21
-android.sdk = 33
-android.ndk = 25b
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-android.archs = arm64-v8a
+    - name: Install dependencies
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y \
+            python3-pip \
+            build-essential \
+            git \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            libncurses5:i386 \
+            libstdc++6:i386 \
+            libz1:i386
+
+    - name: Install Buildozer and Cython
+      run: |
+        pip install --upgrade pip
+        pip install Cython==0.29.36 buildozer
+
+    - name: Accept Android licenses and Build with Buildozer
+      run: |
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        yes | buildozer -v android debug
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: bin/*.apk
