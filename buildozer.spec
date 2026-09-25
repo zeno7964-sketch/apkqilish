@@ -1,26 +1,21 @@
 [app]
-# Ilovaning nomi
 title = Mening Ilovam
-
-# Paket nomi
 package.name = meningilovam
 package.domain = org.test
 
-# Kodlar joylashgan papka (joriy papka)
 source.dir = .
-
-# Qaysi turdagi fayllarni o'qishi
 source.include_exts = py,png,jpg,kv,atlas
 
-# Versiya
 version = 0.1
-
-# Kerakli kutubxonalar
 requirements = python3,kivy
 
-# Ekran yo'nalishi (tikka)
 orientation = portrait
 fullscreen = 0
 
-# Android arxitekturasi
+# Android SDK va API versiyalarini aniq ko'rsatamiz
+android.api = 33
+android.minapi = 21
+android.sdk = 33
+android.ndk = 25b
+
 android.archs = arm64-v8a
